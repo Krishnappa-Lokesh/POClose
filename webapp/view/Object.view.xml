@@ -1,0 +1,120 @@
+<mvc:View xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.f.semantic" xmlns:footerbar="sap.ushell.ui.footerbar" controllerName="srmpocls.POClose.controller.Object">
+	<semantic:SemanticPage id="page" preserveHeaderStateOnScroll="true" showFooter="true">
+		<semantic:titleHeading>
+			<Title text="{i18n>worklistTitle}"/>
+		</semantic:titleHeading>
+		<semantic:content>
+			<Table id="table" width="auto" items="{poNumber}" noDataText="{worklistView>/tableNoDataText}" busyIndicatorDelay="{worklistView>/tableBusyDelay}" growing="true" growingScrollToLoad="true" updateFinished="onUpdateFinished">
+				<columns>
+					<Column id="lineNoColumn">
+						<Text text="{i18n>tablePOLineColumnTitle}" id="poLineColumnTitle"/>
+					</Column>
+					<Column id="poAmountColumn" hAlign="Right">
+						<Text text="{i18n>tablePoAmountColumnTitle}" id="poAmountColumnTitle"/>
+					</Column>
+					<Column id="grAmountColumn" hAlign="Right">
+						<Text text="{i18n>tableGrAmountColumnTitle}" id="grAmountColumnTitle"/>
+					</Column>
+					<Column id="irAmountColumn" hAlign="Right">
+						<Text text="{i18n>tableIrAmountColumnTitle}" id="irAmountColumnTitle"/>
+					</Column>
+	
+				</columns>
+				<items>
+					<ColumnListItem type="Inactive"  id="item1_table_0">
+						<cells>
+							<ObjectAttribute text="{PoItem}" id="attrPoItem"/>
+
+							<ObjectNumber 
+							number="{
+								parts:[{path:'TotalValue'},{path:'Currency'}],
+								type: 'sap.ui.model.type.Currency',
+								formatOptions: {showMeasure: false}
+							}"							
+							 id="numberTotalValue" state="None" unit="{Currency}"/>
+
+							<ObjectNumber 
+							number="{
+								parts:[{path:'ValGrLoc'},{path:'Currency'}],
+								type: 'sap.ui.model.type.Currency',
+								formatOptions: {showMeasure: false}
+							}"							
+							id="numberValGrLoc" state="None" unit="{Currency}"/>
+
+							<ObjectNumber 
+							number="{
+								parts:[{path:'ValIvLoc'},{path:'Currency'}],
+								type: 'sap.ui.model.type.Currency',
+								formatOptions: {showMeasure: false}
+							}"							
+							id="numberValIvLoc" state="None" unit="{Currency}"/>
+
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</semantic:content>
+		<semantic:sendEmailAction>
+			<semantic:SendEmailAction id="shareEmail" press="onShareEmailPress"/>
+		</semantic:sendEmailAction>
+		<semantic:shareInJamAction>
+			<semantic:ShareInJamAction id="shareInJam" visible="{FLP>/isShareInJamActive}" press="onShareInJamPress"/>
+		</semantic:shareInJamAction>
+		<semantic:saveAsTileAction>
+			<footerbar:AddBookmarkButton id="shareTile" title="{worklistView>/saveAsTileTitle}"/>
+		</semantic:saveAsTileAction>
+		<!-- Semantic Message Indicator -->
+		<semantic:messagesIndicator>
+			<semantic:MessagesIndicator press="onMessagesButtonPress"/>
+		</semantic:messagesIndicator>
+		<!-- Semantic Footer Buttons -->
+		<semantic:footerMainAction>
+		    <semantic:FooterMainAction id="btnDone" text="Done" press="onDone"/>
+		</semantic:footerMainAction>
+		<!-- Custom Footer Content-->
+		<semantic:footerCustomActions>
+		</semantic:footerCustomActions>
+	<semantic:headerContent>
+	<ObjectHeader xmlns="sap.m" id="header0" title="{ObjectId}" titleLevel="Auto">
+	    <statuses>
+			<ObjectStatus id="poStatus" 
+							text="{=${DocClosed} ? 'Closed' : 'Open' }" 
+							state="{=${DocClosed} ? 'Success' : 'None'   }" 
+							visible="true" 
+							icon="{=${DocClosed} ? 'sap-icon://circle-task-2' : 'sap-icon://circle-task'}" />
+	    </statuses>
+	    <attributes>
+	        <ObjectAttribute id="attribute0_copy2" text="{PoStatus}" />
+	    </attributes>
+	    <additionalNumbers>
+	        <ObjectNumber 
+	        	number="{
+							parts:[{path:'TvalIvLoc'},{path:'Currency'}],
+							type: 'sap.ui.model.type.Currency',
+							formatOptions: {showMeasure: false}
+						}"	
+	         unit="{Currency}" id="number0_copy"/>
+	        
+	        <ObjectNumber 
+	        	number="{
+					parts:[{path:'TvalGrLoc'},{path:'Currency'}],
+					type: 'sap.ui.model.type.Currency',
+					formatOptions: {showMeasure: false}
+				}"	
+	         unit="{Currency}" id="number0_copy2"/>
+	         
+	        <ObjectNumber 
+	        	number="{
+					parts:[{path:'TotalValue'},{path:'Currency'}],
+					type: 'sap.ui.model.type.Currency',
+					formatOptions: {showMeasure: false}
+				}"	
+	        unit="{Currency}" id="number0" />
+	    </additionalNumbers>
+
+
+	    </ObjectHeader>
+	</semantic:headerContent>
+	</semantic:SemanticPage>
+
+</mvc:View>

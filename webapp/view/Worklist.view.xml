@@ -1,0 +1,142 @@
+<mvc:View xmlns="sap.m" 
+		xmlns:mvc="sap.ui.core.mvc" 
+		xmlns:semantic="sap.f.semantic" 
+		xmlns:footerbar="sap.ushell.ui.footerbar" 
+		controllerName="srmpocls.POClose.controller.Worklist">
+	<semantic:SemanticPage id="page" preserveHeaderStateOnScroll="true" showFooter="true">
+		<semantic:titleHeading>
+			<Title text="{i18n>worklistTitle}"/>
+		</semantic:titleHeading>
+		<semantic:content>
+			<Table id="table" 
+					width="auto" 
+					items="{ path: '/purchaseOrderSet', sorter: { path: 'ObjectId', descending: false } }" 
+					noDataText="{worklistView>/tableNoDataText}" 
+					busyIndicatorDelay="{worklistView>/tableBusyDelay}" 
+					growing="true" 
+					growingScrollToLoad="true" 
+					updateFinished="onUpdateFinished">
+				<headerToolbar>
+					<Toolbar>
+						<!-- Segment Button -->
+						<SegmentedButton id="segBtnGrp" 
+									selectionChange="onSegmentedBtnPressed" 
+									selectedKey="selSegBtn1" 
+									enabled="{worklistView>/selectionMode}">
+						    <items>
+								<SegmentedButtonItem id="segButton1" icon="sap-icon://multiselect-none" key="selSegBtn1"/>
+								<SegmentedButtonItem id="segButton2" icon="sap-icon://multiselect-all" key="selSegBtn2"/>
+					        </items>
+						</SegmentedButton>
+						<ToolbarSpacer/>
+						<Title id="tableHeader" text="{worklistView>/worklistTableTitle}" textAlign="Center"/>
+						<ToolbarSpacer/>
+						<!-- Table level search -->
+						<SearchField id="searchField" 
+								tooltip="{i18n>worklistSearchTooltip}" 
+								search="onSearch" width="auto" 
+								showRefreshButton="true"
+								enabled="{worklistView>/selectionMode}"
+								/>
+					<content/>
+					</Toolbar>
+				</headerToolbar>
+				<columns>
+					<Column id="checkColumn" width="5%" hAlign="Begin"/>
+					<Column id="nameColumn" >
+						<Text text="{i18n>tableNameColumnTitle}" id="nameColumnTitle"/>
+					</Column>
+					<Column id="protypColumn" demandPopin="false" minScreenWidth="Tablet">
+						<Text text="{i18n>tableProtypColumnTitle}" id="protypColumnTitle"/>
+					</Column>
+					<Column id="dateColumn" demandPopin="false" minScreenWidth="Tablet">
+						<Text text="{i18n>tableDateColumnTitle}" id="dateColumnTitle"/>
+					</Column>
+					<Column id="descColumn" demandPopin="false" minScreenWidth="Desktop">
+						<Text text="{i18n>tableDescColumnTitle}" id="descColumnTitle"/>
+					</Column>
+					<Column id="unitNumberColumn" demandPopin="true" hAlign="End">
+						<Text text="{i18n>tableUnitNumberColumnTitle}" id="unitNumberColumnTitle"/>
+					</Column>
+					<Column id="iconClosedColumn" demandPopin="true" width="10%" hAlign="End">
+						<Text text="{i18n>tableiconClosedColumnTitle}" id="iconClosedColumnTitle"/>
+					</Column>
+	
+				</columns>
+				<items>
+					
+					<ColumnListItem type="{=${TvalGrLoc} !== ${TvalIvLoc} ? 'Navigation' : 'Inactive' }" 
+						press="onPress" id="item1_table_0" >
+						<cells>
+							<CheckBox id="checkBoxItem" selected="{Zselctd}" select="onChangeCheckbox" enabled="{=${DocClosed} || ${PoStatus} !== ''  ? false : true }"/>
+							<ObjectIdentifier title="{ObjectId}" text="{PoStatus}" id="idPurchaseOrderNo"/>
+							<ObjectAttribute text="{ProcessType}" id="attribute3"/>
+							<ObjectAttribute text="{path: 'PostingDate' , type: 'sap.ui.model.type.Date', formatOptions: { style: 'medium'} }" id="attribute5"/>
+							<Text text="{Description}" id="attribute4" wrapping="false" />
+							<ObjectNumber 
+								number="{
+										parts:[{path:'TotalValue'},{path:'Currency'}],
+										type: 'sap.ui.model.type.Currency',
+										formatOptions: {showMeasure: false}
+									}"	
+									id="number1_table_0"
+									state="{=${PoStatus} !== ''  ? 'Error' : 'None' }" />
+							<ObjectStatus id="poStatus" 
+											text="{=${DocClosed} ? 'Closed' : 'Open' }" 
+											state="{=${DocClosed} ? 'Success' : 'None'   }" 
+											visible="true" 
+											icon="{=${DocClosed} ? 'sap-icon://circle-task-2' : 'sap-icon://circle-task'}" />
+								
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</semantic:content>
+		<semantic:sendEmailAction>
+			<semantic:SendEmailAction id="shareEmail" press="onShareEmailPress"/>
+		</semantic:sendEmailAction>
+		<semantic:shareInJamAction>
+			<semantic:ShareInJamAction id="shareInJam" visible="{FLP>/isShareInJamActive}" press="onShareInJamPress"/>
+		</semantic:shareInJamAction>
+		<semantic:saveAsTileAction>
+			<footerbar:AddBookmarkButton id="shareTile" title="{worklistView>/saveAsTileTitle}"/>
+		</semantic:saveAsTileAction>
+		<!-- Semantic Message Indicator -->
+		<semantic:messagesIndicator>
+			<semantic:MessagesIndicator press="onMessagesButtonPress"/>
+		</semantic:messagesIndicator>
+		<!-- Semantic Footer Buttons -->
+		<semantic:footerMainAction>
+		    <semantic:FooterMainAction id="btnClosePo" text="Close PO" press="onSave" enabled="{worklistView>/dataChanged}" />
+		</semantic:footerMainAction>
+		<!-- Custom Footer Content-->
+		<semantic:footerCustomActions>
+			<Button id="btnCancel" text="Cancel"/>
+		</semantic:footerCustomActions>
+	<semantic:headerContent>
+					<!-- Multi input Box -->
+					<FlexBox
+					justifyContent="End"
+					alignItems="Start"
+					 >
+					<items>
+		            <MultiInput id="multiInputPO"  placeholder="Enter multiple orders ..." 
+		            			enableMultiLineMode="true" 
+		            			maxTokens="50" 
+		            			showValueHelp="false"
+		            			enabled="{worklistView>/selectionMode}"
+		            			width="auto"/>
+		            
+		            <Button id="miSearchButton" activeIcon="sap-icon://search" 
+		            			icon="sap-icon://search"  press="multiInputBtnSearchPressed"
+		            			enabled="{worklistView>/selectionMode}"
+		            			/>
+		            <Button id="miRefreshButton" activeIcon="sap-icon://refresh" 
+		            			icon="sap-icon://refresh"  press="multiInputBtnRefreshPressed"
+		            			enabled="{worklistView>/selectionMode}"
+		            			/>
+	            </items>
+				</FlexBox>			
+	</semantic:headerContent>
+	</semantic:SemanticPage>
+</mvc:View>
